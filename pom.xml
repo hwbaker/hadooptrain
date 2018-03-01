@@ -15,6 +15,14 @@
     <hadoop.version>2.6.0-cdh5.7.0</hadoop.version>
   </properties>
 
+  <!-- 添加仓库 -->
+  <repositories>
+    <repository>
+      <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <!-- 添加hadoop依赖 -->
     <dependency>
