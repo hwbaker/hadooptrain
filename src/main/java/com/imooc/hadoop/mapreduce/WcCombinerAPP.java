@@ -8,17 +8,16 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
 /**
- * 词频统计
+ * 词频统计-Combiner
  * hdfs://localhost:19000/input/wc/hello.txt hdfs://localhost:19000/output/wc
  */
-public class WordCountAPP {
+public class WcCombinerAPP {
 
     /**
      * Map:输入文件
@@ -61,9 +60,10 @@ public class WordCountAPP {
 
         // 准备清理已存在的输出目录
         Path outputPath = new Path(args[1]);
-        //本地运行报错
-//        FileSystem fileSystem = FileSystem.get(configuration);
-        FileSystem fileSystem = outputPath.getFileSystem(configuration);
+        //本地运行报错，服务器jar打包运行正常
+        FileSystem fileSystem = FileSystem.get(configuration);
+        //本地运行正常
+//        FileSystem fileSystem = outputPath.getFileSystem(configuration);
         if(fileSystem.exists(outputPath)){
             fileSystem.delete(outputPath, true);
             System.out.println("output file exists, but is has deleted...");
@@ -74,7 +74,7 @@ public class WordCountAPP {
         Job job = Job.getInstance(configuration, "wordcount");
 
         //设置job的处理类
-        job.setJarByClass(WordCountAPP.class);
+        job.setJarByClass(WcCombinerAPP.class);
 
         //设置作业处理的输入路径
         FileInputFormat.setInputPaths(job, new Path(args[0]));
@@ -88,6 +88,9 @@ public class WordCountAPP {
         job.setReducerClass(MyReduce.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
+
+        //通过job设置combiner处理类，其实逻辑上和我们的reduce是一模一样的
+        job.setCombinerClass(MyReduce.class);
 
         //设置作业处理的输出路径
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
