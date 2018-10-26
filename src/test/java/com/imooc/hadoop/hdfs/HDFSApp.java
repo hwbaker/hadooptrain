@@ -20,7 +20,8 @@ import java.net.URI;
  */
 public class HDFSApp {
 
-    public static final String HDFS_PATH = "hdfs://localhost:19000";
+//    public static final String HDFS_PATH = "hdfs://localhost:19000";
+    public static final String HDFS_PATH = "hdfs://hadoop000:8020";
 
     FileSystem fileSystem = null;
     Configuration configuration = null;
@@ -52,9 +53,9 @@ public class HDFSApp {
      */
     @Test
     public void cat() throws Exception {
-        FSDataInputStream in = fileSystem.open(new Path("/hdfsapi/test/a.txt"));
-        IOUtils.copyBytes(in, System.out, 1024);
-        in.close();
+        FSDataInputStream inOut = fileSystem.open(new Path("/hdfsapi/test/a.txt"));
+        IOUtils.copyBytes(inOut, System.out, 1024);
+        inOut.close();
     }
 
     /**
@@ -120,7 +121,7 @@ public class HDFSApp {
     @Test
     public void listFiles() throws Exception {
 
-        FileStatus[] fileStatuses = fileSystem.listStatus(new Path("/hdfsapi/"));
+        FileStatus[] fileStatuses = fileSystem.listStatus(new Path("/hdfsapi/test"));
         for (FileStatus fileStatus: fileStatuses) {
             String isDir = fileStatus.isDirectory() ? "目录" : "文件";
             short replication = fileStatus.getReplication();
@@ -133,13 +134,24 @@ public class HDFSApp {
 
     }
 
+    /**
+     * 删除目录
+     * @throws Exception
+     */
+    @Test
+    public void delete() throws Exception {
+        fileSystem.delete(new Path("/10000_access.log"), true);
+    }
+
+
     @Before
     public void setUp() throws Exception {
         System.out.println("HDFSApp.setUp");
 
         configuration = new Configuration();
 //        fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration);
-        fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration, "hwbaker");
+        fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration, "hadoop");
+//        fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration, "hwbaker");
     }
 
     @After
@@ -147,6 +159,6 @@ public class HDFSApp {
         configuration = null;
         fileSystem = null;
 
-        System.out.println("HDFSApp.tearDown");
+        System.out.println("\r\nHDFSApp.tearDown");
     }
 }
