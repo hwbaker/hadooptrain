@@ -29,6 +29,7 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- 添加UserAgent解析的依赖 -->
@@ -45,5 +46,26 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
+
+  <!-- mvn assembly:assembly -->
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass></mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
