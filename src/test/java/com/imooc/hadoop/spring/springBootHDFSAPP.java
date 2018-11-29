@@ -17,15 +17,17 @@ public class springBootHDFSAPP implements CommandLineRunner {
     FsShell fsShell;
 
     public void run(String... strings) throws Exception {
-        for (FileStatus fileStatus : fsShell.lsr("/springhdfs")) {
+        System.out.println("=========start===========");
+        for(FileStatus fileStatus : fsShell.lsr("/springhdfs")) {
             System.out.println(">" + fileStatus.getPath());
         }
+        System.out.println("=========end===========");
     }
+
 //    public static void main(String[] args) {
 //        SpringApplication.run(springBootHDFSAPP.class, args);
 //    }
-
-
+    
     public static void main(String[] args) {
         try {
             SpringApplication.run(springBootHDFSAPP.class, args);
